@@ -1,0 +1,557 @@
+class StudentUse {
+	public String name;
+	public String father;
+	public String mother;
+	public String branch;
+	public int semester;
+	public int size;
+	
+	public StudentUse() {
+		
+	}
+	
+	public StudentUse(String name, String father, String mother, String branch, int semester) {
+		this.name = name;
+		this.father = father;
+		this.mother = mother;
+		this.branch = branch;
+		this.semester = semester;
+		
+	}
+}
+
+class CourseUse {
+	
+	public String branch;
+	public int semester;
+	
+	public CourseUse() {
+		
+	}
+	
+	public CourseUse(String branch, int semester) {
+		this.branch = branch;
+		this.semester = semester;
+	}
+}
+
+class ExamUse {
+	
+	public String subjectCode;
+	public String subject;
+	public int midSemMarks;
+	public int endSemMarks;
+	public int viva;
+	public int internalMarks;  //IT MAY INCLUDE THE MARKS OF ATTENDANCE AND ASSIGNMENTS
+
+	public ExamUse() {
+		
+	}
+	
+	public ExamUse(String subject, int midSemMarks,int endSemMarks,int viva,int internalMarks) {
+		this.subject = subject;
+		this.midSemMarks = midSemMarks;
+		this.endSemMarks = endSemMarks;
+		this.viva = viva;
+		this.internalMarks = internalMarks;
+	}
+
+}
+
+import java.util.*;
+
+public class Project {
+	
+	public static HashMap<Integer, StudentUse> StudentRecord = new HashMap<>();
+	
+	public static HashMap<CourseUse, HashMap<String, String>> CourseRecord = new HashMap<>();
+	
+	public static HashMap<String, ExamUse> ExamRecord = new HashMap<>();
+	
+	public static HashMap<HashMap<HashMap<Integer, StudentUse>, HashMap<CourseUse, HashMap<String, String>>> , 
+	HashMap<String, ExamUse>> StudentExam = new HashMap<>();
+	
+	//STUDENT RECORDS
+	public static int Student() {
+		System.out.println("________________________");
+		System.out.println("|*****STUDENT MENU*****|");
+		System.out.println("|     1. CREATE        |");
+		System.out.println("|     2. DISPLAY       |");
+		System.out.println("|     3. UPDATE        |");
+		System.out.println("|     4. DELETE        |");
+		System.out.println("|______________________|");
+		int totalStudents = 0;
+		Scanner s = new Scanner(System.in);	
+		char ch = 'y';
+		while (ch == 'y') {
+			System.out.println("Enter your choice: ");
+			int choice = s.nextInt();
+			if (choice == 1) {
+				System.out.println("Enter the number of records: ");
+				int count = s.nextInt();
+				for (int i = 0; i < count; i++) {
+					System.out.println("Enter Student's Name: ");
+					String name = s.next();
+					System.out.println("Enter Father's Name: ");
+					String father = s.next();
+					System.out.println("Enter Mother's Name: ");
+					String mother = s.next();
+					System.out.println("Enter branch: ");
+					String branch = s.next();
+					System.out.println("Enter Semester: ");
+					int semester = s.nextInt();
+					StudentUse stud = new StudentUse(name, father, mother, branch, semester);
+					System.out.println("Enter Student's Roll No. : ");
+					int roll_no = s.nextInt();
+					StudentRecord.put(roll_no, stud);
+					totalStudents++;
+				}
+				System.out.println("RECORDS ARE ADDED SUCCESSFULLY!!!");
+			}
+			else if (choice == 2) {
+				System.out.println("**************************************STUDENT RECORDS*************************************");
+				System.out.println("__________________________________________________________________________________________");
+				System.out.println("|    NAME    |   ROLL NO   | FATHER'S NAME |  MOTHER'S NAME  |    BRANCH    |  SEMESTER  |");
+				System.out.println("|----------------------------------------------------------------------------------------|");
+				Set<Integer> keys = StudentRecord.keySet();
+				for (int r: keys) {
+					System.out.print("|   " + StudentRecord.get(r).name + "   |");
+					System.out.print("    " + r + "    |");
+					System.out.print("    " + StudentRecord.get(r).father + "   |");
+					System.out.print("    " + StudentRecord.get(r).mother + "     |");
+					System.out.print("    " + StudentRecord.get(r).branch + "    |");
+					System.out.println("     " + StudentRecord.get(r).semester + "      |");
+					System.out.println("|----------------------------------------------------------------------------------------|");
+				}
+		    }
+			else if (choice == 3) {
+				System.out.println("Enter the roll no of the student whose record you want to update: ");
+				int update = s.nextInt();
+				boolean exist = false;
+				Set<Integer> keys = StudentRecord.keySet();
+				for (int r: keys) {
+					if (r == update) {
+						exist = true;
+						System.out.println("Enter Student's Name: ");
+						String name = s.next();
+						System.out.println("Enter Father's Name: ");
+						String father = s.next();
+						System.out.println("Enterr Mother's Name: ");
+						String mother = s.next();
+						System.out.println("Enter branch: ");
+						String branch = s.next();
+						System.out.println("Enter Semester: ");
+						int semester = s.nextInt();
+						StudentUse stud = new StudentUse(name, father, mother, branch, semester);
+						StudentRecord.replace(update, StudentRecord.get(r), stud);
+						System.out.println("RECORD SUCCESSFULLY UPDATED!!!");
+						break;
+					}
+				}
+				if (!exist) {
+					System.out.println("RECORD DOES NOT EXIST!!!");
+				}
+			}
+			else if (choice == 4) {
+				System.out.println("Enter the roll no of the student whose record you want to delete");
+				int remove = s.nextInt();
+				boolean exist = false;
+				Set<Integer> keys = StudentRecord.keySet();
+				for (int r: keys) {
+					if (remove == r) {
+						exist = true;
+						StudentRecord.remove(remove);
+						System.out.println("RECORD SUCCESSFULLY DELETED!!!");
+						totalStudents--;
+						break;
+					}
+				}
+				if (!exist) {
+					System.out.println("RECORD DOES NOT EXIST!!!");
+				}
+			}
+			else {
+				System.out.println("INVALID CHOICE!!!");
+			}
+			System.out.println();
+			System.out.println("Do you want to continue?  ");
+			ch = s.next().charAt(0);
+		}
+		return totalStudents;
+	}
+	
+	//COURSE RECORDS
+	public static void Course() {
+		int courseStudents = 0;
+		System.out.println("________________________");
+		System.out.println("|******COURSE MENU*****|");
+		System.out.println("|     1. CREATE        |");
+		System.out.println("|     2. DISPLAY       |");
+		System.out.println("|     3. UPDATE        |");
+		System.out.println("|     4. DELETE        |");
+		System.out.println("|______________________|");
+		
+		Scanner s = new Scanner(System.in);	
+		char ch = 'y';
+		while (ch == 'y') {
+			System.out.println("Enter your choice: ");
+			int choice = s.nextInt();
+			if (choice == 1) {
+				System.out.println("Enter number of records: ");
+				int count = s.nextInt();
+				for (int i = 0; i < count; i++) {
+					System.out.println("Enter the branch of the student:");
+					String branch = s.next();
+					System.out.println("Enter the semester:");
+					int semester = s.nextInt();
+					System.out.println("Enter the no. of subjects:");
+					int no_subject = s.nextInt();
+					HashMap<String, String> subjects = new HashMap<>();
+					for (int j = 0; j < no_subject; j++) {
+						System.out.println("Enter " + " subject " + (j + 1) + " :");
+						String subject = s.next();
+						System.out.println("Enter the subject code:");
+						String subjectCode = s.next();
+						subjects.put(subjectCode, subject);
+					}
+					CourseUse course = new CourseUse(branch, semester);
+					CourseRecord.put(course, subjects);
+				}
+				System.out.println("RECORDS ARE ADDED SUCCESSFULLY!!!");
+			}
+			else if (choice == 2) {
+				Set<CourseUse> keys = CourseRecord.keySet();
+				System.out.println("*******************************COURSE RECORDS****************************");
+				System.out.println("_________________________________________________________________________");
+				System.out.println("|    BRANCH     |    SEMESTER    |       SUBJECTS       |  SUBJECT CODE |");
+				System.out.println("|-----------------------------------------------------------------------|");
+				for (CourseUse r: keys) {				
+					Set<String> sub = CourseRecord.get(r).keySet();
+					for (String str : sub) {
+						System.out.print("|\t" + r.branch + "\t|\t" + r.semester + " \t|");
+						System.out.println("\t" + CourseRecord.get(r).get(str) + "\t\t|\t" + str + "\t|");
+					}
+					System.out.println("|-----------------------------------------------------------------------|");
+				}
+			}
+			else if (choice == 3) {
+				System.out.println("Enter the branch whose record you want to update: ");
+				String updateBranch = s.next();
+				System.out.println("Enter the semester whose record you want to update: ");
+				int updateSemester = s.nextInt();
+				boolean exist = false;
+				Set<CourseUse> keys = CourseRecord.keySet();
+				for (CourseUse r: keys) {
+					if (r.branch.equals(updateBranch) && r.semester == updateSemester) {
+						exist = true;
+						System.out.println("Enter the no. of subjects:");
+						int no_subject = s.nextInt();
+						HashMap<String, String> subjects = new HashMap<>();
+						for (int j = 0; j < no_subject; j++) {
+							System.out.println("Enter " + " subject " + (j + 1) + " :");
+							String subject = s.next();
+							System.out.println("Enter the subject code:");
+							String subjectCode = s.next();
+							subjects.put(subjectCode, subject);
+						}
+						CourseRecord.replace(r, CourseRecord.get(r), subjects);
+						System.out.println("RECORD SUCCESSFULLY UPDATED!!!");
+						break;
+					}
+				}
+				if (!exist) {
+					System.out.println("RECORD DOES NOT EXIST!!!");
+				}
+			}
+			else if (choice == 4) {
+				System.out.println("Enter the branch whose record you want to update: ");
+				String removeBranch = s.next();
+				System.out.println("Enter the semester whose record you want to update: ");
+				int removeSemester = s.nextInt();
+				boolean exist = false;
+				Set<CourseUse> keys = CourseRecord.keySet();
+				for (CourseUse r: keys) {
+					if (r.branch.equals(removeBranch) && r.semester == removeSemester) {
+						CourseRecord.remove(r);
+						exist = true;
+						System.out.println("RECORD SUCCESSFULLY DELETED!!!");
+						break;
+					}
+				}
+				if (!exist) {
+					System.out.println("RECORD DOES NOT EXIST!!!");
+				}
+			}
+			else {
+				System.out.println("INVALID CHOICE!!!");
+			}
+			System.out.println();
+			System.out.println("Do you want to continue?  ");
+			ch = s.next().charAt(0);
+		}
+	}
+	
+	// EXAM RECORDS
+	public static int Exam() {
+		System.out.println("_______________________");
+		System.out.println("|******EXAM MENU******|");
+		System.out.println("|     1. CREATE       |");
+		System.out.println("|     2. DISPLAY      |");
+		System.out.println("|     3. UPDATE       |");
+		System.out.println("|     4. DELETE       |");
+		System.out.println("|_____________________|");
+		int totalMarks = 0;
+		Scanner s = new Scanner(System.in);	
+		char ch = 'y';
+		while (ch == 'y') {
+			System.out.println("Enter your choice: ");
+			int choice = s.nextInt();
+			if (choice == 1) {
+				System.out.println("Enter number of records: ");
+				int count = s.nextInt();
+				for (int i = 0; i < count; i++) {
+					System.out.println("Enter the subject code:");
+					String subjectCode = s.next();
+					System.out.println("Enter the subject: ");
+					String subject = s.next();
+					System.out.println("Enter mid semester marks:");
+					int m1 = s.nextInt();
+					System.out.println("Enter end semester marks:");
+					int m2 = s.nextInt();
+					System.out.println("Enter viva marks");
+					int m3 = s.nextInt();
+					System.out.println("Enter internal assessment marks:");
+					int m4 = s.nextInt();
+					ExamUse exam = new ExamUse(subject, m1,m2,m3,m4);
+				    ExamRecord.put(subjectCode, exam);
+				    totalMarks += m1 + m2 + m3 + m4;
+				}
+				System.out.println("RECORDS ARE ADDED SUCCESSFULLY!!!");
+			}
+			else if (choice == 2) {
+				System.out.println("****************************************************EXAM RECORDS*************************************************");
+				System.out.println("_________________________________________________________________________________________________________________");
+				System.out.println("|    SUBJECT    | SUBJECT CODE  |  MID SEMESTER MARKS  |   END SEMESTER MARKS   |     VIVA     | INTERNAL MARKS |");
+				System.out.println("|---------------------------------------------------------------------------------------------------------------|");
+				Set<String> keys = ExamRecord.keySet();
+				for (String r: keys) {
+					ExamUse exam = ExamRecord.get(r);
+					System.out.print("|\t" + exam.subject + "\t|\t" + r + "\t|\t" + exam.midSemMarks + "\t\t|\t" + exam.endSemMarks + "\t\t|");
+					System.out.println("\t" + exam.viva + "  \t|\t" + exam.internalMarks + "\t|");
+					System.out.println("|---------------------------------------------------------------------------------------------------------------|");
+				}
+		    }
+			else if (choice == 3) {
+				System.out.println("Enter the subject code of the record that you want to update:");
+				String str = s.next();
+				boolean exist = false;
+				Set<String> keys = ExamRecord.keySet();
+				for (String r: keys) {
+					if (r.equals(str)) {
+						exist = true;
+						totalMarks -= ExamRecord.get(r).midSemMarks - ExamRecord.get(r).endSemMarks - ExamRecord.get(r).viva - ExamRecord.get(r).internalMarks;
+						System.out.println("Enter the subject: ");
+						String name = s.next();
+						System.out.println("Enter mid semester marks:");
+						int m1 = s.nextInt();
+						System.out.println("Enter end semester marks:");
+						int m2 = s.nextInt();
+						System.out.println("Enter viva marks");
+						int m3 = s.nextInt();
+						System.out.println("Enter internal assessment marks:");
+						int m4 = s.nextInt();
+						ExamUse exam = new ExamUse(name,m1,m2,m3,m4);
+						ExamRecord.replace(str,ExamRecord.get(r), exam);
+						System.out.println("RECORD SUCCESSFULLY UPDATED!!!");
+						totalMarks += m1 + m2 + m3 + m4;
+						break;
+					}
+				}
+				if (!exist) {
+					System.out.println("RECORD DOES NOT EXIST!!!");
+				}
+			}
+			else if (choice == 4) {
+				System.out.println("Enter the subject code of the record that you want to delete:");
+				String str = s.next();
+				boolean exist = false;
+				Set<String> keys = ExamRecord.keySet();
+				for (String r: keys) {
+					if (r.equals(str)) {
+						exist = true;
+						totalMarks -= ExamRecord.get(r).midSemMarks - ExamRecord.get(r).endSemMarks - ExamRecord.get(r).viva - ExamRecord.get(r).internalMarks;
+						ExamRecord.remove(r);
+						System.out.println("RECORD SUCCESSFULLY DELETED!!!");
+						break;
+					}
+				}
+				if (!exist) {
+					System.out.println("RECORD DOES NOT EXIST!!!");
+				}
+			}
+			else {
+				System.out.println("INVALID CHOICE!!!");
+			}
+			System.out.println();
+			System.out.println("Do you want to continue?  ");
+			ch = s.next().charAt(0);
+		}
+		return totalMarks;
+	}
+	
+	public static void individual() {
+		System.out.println("Enter the roll no. of the student whose record you want to print:");
+		Scanner scan = new Scanner(System.in);	
+		int r = scan.nextInt();
+		boolean exist = false;
+		System.out.println();
+		System.out.println("\t\t\tINDIRA GANDHI DELHI TECHNICAL UNIVERSITY FOR WOMEN");
+		System.out.println();
+		Set<HashMap<HashMap<Integer, StudentUse>, HashMap<CourseUse, HashMap<String, String>>>> key1 = StudentExam.keySet();
+		for (HashMap<HashMap<Integer, StudentUse>, HashMap<CourseUse, HashMap<String, String>>> s : key1) {
+			Set<HashMap<Integer, StudentUse>> key2 = s.keySet();
+			for (HashMap<Integer, StudentUse> s1 : key2) {
+				Set<Integer> key3 = s1.keySet();
+				for (Integer s2 : key3) {
+					if (s2 == r) {
+						exist = true;
+						System.out.println("STUDENT'S NAME        : " + s1.get(s2).name);	
+						System.out.println("STUDENT'S ROLL NUMBER : " + r);
+						System.out.println("FATHER'S NAME         : " + s1.get(s2).father);
+						System.out.println("MOTHER'S NAME         : " + s1.get(s2).mother);
+						System.out.println("BRANCH                : " + s1.get(s2).branch);
+						System.out.println("SEMESTER              : " + s1.get(s2).semester);
+						System.out.println();
+						break;
+					}
+				}
+				if (exist) {
+					System.out.println("***********************************************************EXAM RECORDS*********************************************************");
+					System.out.println("________________________________________________________________________________________________________________________________");
+					System.out.println("|    SUBJECT    | SUBJECT CODE  |  MID SEMESTER MARKS  |   END SEMESTER MARKS   |     VIVA     | INTERNAL MARKS |  TOTAL MARKS  |");
+					System.out.println("|-------------------------------------------------------------------------------------------------------------------------------|");
+					Set<String> key4 = StudentExam.get(s).keySet();
+					for (String s3 : key4) {
+						ExamUse exam = StudentExam.get(s).get(s3);
+						int totalMarks = exam.midSemMarks + exam.endSemMarks + exam.viva + exam.internalMarks;
+						System.out.print("|\t" + exam.subject + "\t|\t" + s3 + "\t|\t  " + exam.midSemMarks + "    \t|\t" + exam.endSemMarks + "\t\t|\t");
+						System.out.println(exam.viva + "  \t|\t" + exam.internalMarks + "\t|\t" + totalMarks + "\t|");
+						System.out.println("|-------------------------------------------------------------------------------------------------------------------------------|");
+					}
+					System.out.println();
+				} else {
+					System.out.println("RECORD DOES NOT EXIST!!!");
+				}
+			}
+			
+		}
+		
+	}
+	
+	public static void courseWise() {
+		int courseWiseStudents = 0;
+		Scanner scan = new Scanner(System.in);	
+		System.out.println("Enter the branch whose result you want to print: ");
+		String branch = scan.next();
+		System.out.println("Enter the semester whose result you want to print: ");
+		int semester = scan.nextInt();
+		System.out.println();
+		System.out.println("\t\tINDIRA GANDHI DELHI TECHNICAL UNIVERSITY FOR WOMEN");
+		System.out.println();
+		System.out.println("************************************************COURSE WISE RESULT**********************************************");
+		System.out.println("_________________________________________________________________________________________________________________");
+		Set<HashMap<HashMap<Integer, StudentUse>, HashMap<CourseUse, HashMap<String, String>>>> key1 = StudentExam.keySet();
+		for (HashMap<HashMap<Integer, StudentUse>, HashMap<CourseUse, HashMap<String, String>>> s : key1) {
+			Set<HashMap<Integer, StudentUse>> key2 = s.keySet();
+			for (HashMap<Integer, StudentUse> s1 : key2) {
+				Set<CourseUse> key3 = s.get(s1).keySet();
+				boolean exist = false;
+				for (CourseUse s2 : key3) {
+					if (s2.branch.equals(branch) && s2.semester == semester) {
+						exist = true;
+						System.out.print("|    ROLL NO    |");
+						Set<String> key4 = s.get(s1).get(s2).keySet();
+						for (String s3 : key4) {
+							System.out.print("\t" + s.get(s1).get(s2).get(s3) + "\t|");
+						}
+						break;
+					}
+				}
+				if (!exist) {
+					System.out.println("COURSE DOES NOT EXIST!!!");
+				}
+			}
+		}
+		System.out.println("  TOTAL MARKS  |");
+		System.out.println("|---------------------------------------------------------------------------------------------------------------|");
+		for (HashMap<HashMap<Integer, StudentUse>, HashMap<CourseUse, HashMap<String, String>>> s : key1) {
+			Set<HashMap<Integer, StudentUse>> key2 = s.keySet();
+			for (HashMap<Integer, StudentUse> s1 : key2) {
+				Set<CourseUse> key4 = s.get(s1).keySet();
+				for (CourseUse s3 : key4) {
+					if (s3.branch.equals(branch) && s3.semester == semester) {
+						int total = 0;
+						Set<Integer> key3 = s1.keySet();
+						for (Integer s2 : key3) {
+							System.out.print("|\t" + s2 + "\t|");
+							Set<String> key5 = StudentExam.get(s).keySet();
+							for (String s4 : key5) {
+								ExamUse exam = StudentExam.get(s).get(s4);
+								int totalMarks = exam.midSemMarks + exam.endSemMarks + exam.viva + exam.internalMarks;
+								System.out.print("\t" + totalMarks + "\t|");
+								total += totalMarks;
+								
+							}
+							System.out.println("\t" + total + "\t|");
+							total = 0;
+							System.out.println("|---------------------------------------------------------------------------------------------------------------|");
+							courseWiseStudents++;
+						}
+						break;
+					}
+				}
+			}
+		}
+		System.out.println();
+		System.out.println("Course Wise Students  : " + courseWiseStudents);
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		int totalStudents = Student();
+		Course();
+		int totalMarks = Exam();
+		
+		// ASSIGNING COURSE TO THE STUDENTS
+		HashMap<HashMap<Integer, StudentUse>, HashMap<CourseUse, HashMap<String, String>>> StudentCourse = new HashMap<>();
+		Set<Integer> key1 = StudentRecord.keySet();
+		for (Integer r: key1) { 
+			Set<CourseUse> key2 = CourseRecord.keySet();
+			for (CourseUse s: key2) {
+				if (StudentRecord.get(r).branch.equals(s.branch) && StudentRecord.get(r).semester == s.semester) {
+					StudentCourse.put(StudentRecord, CourseRecord);
+				}
+			}
+		}
+
+		// ASSIGNING EXAM TO COURSE
+		Set<String> key3 = ExamRecord.keySet();
+		for (String s: key3) {
+			Set<HashMap<Integer, StudentUse>> key4 = StudentCourse.keySet();
+			for (HashMap<Integer, StudentUse> s1 : key4) {
+				Set<CourseUse> key5 = StudentCourse.get(s1).keySet();
+				for (CourseUse s2 : key5) {
+					Set<String> key6 = StudentCourse.get(s1).get(s2).keySet();
+					for (String s3 : key6) {
+						if (s.equals(s3)) {
+							StudentExam.put(StudentCourse, ExamRecord);
+						}
+					}
+				}
+			}
+		}
+		
+		individual();
+		courseWise();
+	}
+}
